@@ -1,0 +1,21 @@
+# 方法 1
+s = input() # This company is not poor at all. 
+s1 = s.index("not")
+s2 = s.index("at all") + 6
+d = s[:s1] + "good" + s[s2:]
+print(d) # This company is good.
+# 方法 2
+s = input() # This company is not poor at all. 
+s1 = s.split("not")[0]
+s2 = s.split("at all")[1]
+d = s1 + "good" + s2
+print(d) # This company is good.
+# 方法 3
+s = input() # This company is not poor at all. 
+import re
+d = re.sub(r"not\s+.*?\s+at\s+all", "good", s)
+print(d) # This company is good.
+
+# 方法 3 會出現以下問題
+# input: I'm not at all happy about it.
+# output: I'm not at all happy about it.

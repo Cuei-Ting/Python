@@ -1,0 +1,17 @@
+a, b = input(), input() # 11, 20
+def isSelfDividing(n):
+    for i in str(n):
+        if int(i)==0 or n % int(i) != 0:
+            return False
+    return True
+c = []
+for i in range(int(a),int(b)+1):
+    if isSelfDividing(i)==True:
+        c.append(i)
+m = 0        
+for i in range(1,len(c)):
+    e = c[i]-c[i-1]
+    if e > m:
+        m = e
+        d = (c[i-1],c[i])
+print(d) # (12, 15)

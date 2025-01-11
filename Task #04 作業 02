@@ -1,0 +1,53 @@
+# 方法 1
+def add1(n):
+    return n+1
+def isPrime(n):
+    if n <= 1:
+        return False
+    return all(n % i for i in range(2,int(n**0.5)+1))
+def f(L, F):
+    list1 = []
+    for i in L:
+        list1.append(F(i))
+    return list1    
+L = [1,2,3,4,5,6]
+F = add1
+print(f(L, F)) # [2,3,4,5,6,7]
+L = [2,3,4,5,6,7] 
+F = isPrime
+print(f(L, F)) # [True,True,False,True,False,True]
+# 方法 2
+def add1(n):
+    return n+1
+def isPrime(n):
+    if n <= 1:
+        return False
+    return all(n % i for i in range(2,int(n**0.5)+1))
+def f(L, F):
+    return [F(i) for i in L]
+L = [1,2,3,4,5,6]
+F = add1
+print(f(L, F)) # [2,3,4,5,6,7]
+L = [2,3,4,5,6,7] 
+F = isPrime
+print(f(L, F)) # [True,True,False,True,False,True]
+# 方法 3
+def add1(n):
+    return n+1
+def isPrime(n):
+    if n <= 1:
+        return False
+    for i in range(2,n):
+        if n % i == 0:
+            return False
+    return True
+def f(L, F):
+    for i in range(len(L)):
+        L[i] = F(L[i])
+    return L
+L = [1,2,3,4,5,6]
+F = add1
+print(f(L, F)) # [2,3,4,5,6,7]
+L = [2,3,4,5,6,7] 
+F = isPrime
+print(f(L, F)) # [True,True,False,True,False,True]

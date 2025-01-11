@@ -1,0 +1,19 @@
+# 難度 5 顆星 
+# 方法 1
+s = input() # AB
+d = []
+def permute(s, i, length):
+    if i == length:
+        d.append("".join(s))
+    else:
+        for j in range(i, length):
+            s[i], s[j] = s[j], s[i]
+            permute(s, i+1, length)
+            s[j], s[i] = s[i], s[j]
+permute(list(s), 0, len(s))
+print(d) # ['AB', 'BA']
+# 方法 2
+s = input() # AB
+from itertools import permutations 
+d = [''.join(i) for i in permutations(s)] 
+print(d) # ['AB', 'BA']

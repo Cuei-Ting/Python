@@ -1,0 +1,32 @@
+# 難度 5 顆星 
+# 方法 1
+n = int(input())
+def climbStairs(n: int) -> int:
+  W = [0, 1, 2]
+  if len(W) < n+1:
+      return climbStairs(n - 2) + climbStairs(n - 1);
+  return W[n];
+print(climbStairs(n))
+# 方法 2
+n = int(input())
+W = [0, 1, 2]
+for i in range(3, n+1):
+  W.append(W[i - 2] + W[i - 1])
+print(W[n])
+# 方法 3
+n = input()  
+def f(i):
+    if i in [0,1,2]:
+        return i
+    return f(i-1) + f(i-2)
+d = f(int(n))
+print(d) # 2
+# 方法 4
+n = input()  
+from itertools import combinations
+d = 0
+for i in range(int(int(n)/2)+1):
+    if int(n) == 0:
+        break
+    d += len(list(combinations([1]*(int(n)-i), i)))
+print(d) # 2

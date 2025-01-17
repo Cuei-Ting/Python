@@ -1,0 +1,76 @@
+import requests
+from bs4 import BeautifulSoup
+
+# 利用 requests 對 API 來源發送一個請求
+response = requests.get('https://udn.com/news/breaknews/1')
+soup = BeautifulSoup(response.text)
+
+news = []
+
+for link in soup.find_all('h3', class_='rounded-thumb__title')[:4]:
+  news_url = link.a['href']
+  news_response = requests.get('https://udn.com' + news_url)
+  news_soup = BeautifulSoup(news_response.text)
+  news_content = news_soup.find('div', class_='article-content__paragraph').text.strip().replace('\n', ' ')
+  news.append(news_content)
+  
+print(news) 
+#------------------------------------------------------------------------------
+# 若用 colab 請執行 第一部分 (不需執行 第二部分)
+# 若用 Spyder 請執行 第二部分 (不需執行 第一部分)
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ 第一部分(用 colab 執行) ~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+# 安裝 jieba 中文斷詞套件
+!pip install jieba 
+
+# 下載官方字典檔
+!wget https://raw.githubusercontent.com/fxsjy/jieba/master/extra_dict/dict.txt.big
+
+
+# 載入套件與字典檔
+import jieba
+jieba.load_userdict("dict.txt.big")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 以上用 colab 執行 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~ 第二部分(用 Spyder 執行) ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+import requests
+
+url = 'https://raw.githubusercontent.com/fxsjy/jieba/master/extra_dict/dict.txt.big'
+file_name = 'dict.txt.big'
+
+# 發送 HTTP GET 請求
+response = requests.get(url)
+
+# 將內容保存到文件
+with open(file_name, 'wb') as file:
+    file.write(response.content)
+
+print(f"文件已下載: {file_name}")
+
+# 載入套件與字典檔
+import jieba
+jieba.load_userdict("dict.txt.big")
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 以上用 Spyder 執行 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+#------------------------------------------------------------------------------
+# 精確模式斷詞
+tokens = []
+for d in news:
+  token = list(jieba.cut(d, HMM=False)) # token = d 字串斷詞結果
+  tokens += token
+  
+print(tokens)
+
+word_count = {}
+for i in tokens:
+    if i not in word_count:
+        word_count[i] = 0
+    word_count[i] += 1
+
+print(word_count)
+# {'聲明': 4, '主管機關': 3, ...}
+#------------------------------------------------------------------------------
+word_count = dict(sorted(word_count.items(), reverse = True, key = lambda item: item[1]))
+
+print(word_count)
+# {'聲明': 4, '主管機關': 3, ...}

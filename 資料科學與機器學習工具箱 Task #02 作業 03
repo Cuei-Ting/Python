@@ -1,4 +1,6 @@
 import pandas as pd
 data = pd.read_csv('https://raw.githubusercontent.com/kiang/pharmacies/master/data.csv')
 df = pd.DataFrame(data)
-df.groupby('縣市')['醫事機構名稱'].count().sort_values(ascending = False)[0:5]
+for i in range(len(df['地址'])):
+    df['地址'][i] = df['地址'][i][:3]
+df.groupby('地址')['醫事機構名稱'].count().sort_values(ascending = False)[0:5]

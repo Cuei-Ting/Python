@@ -1,0 +1,72 @@
+# 方法 1 
+import pandas as pd
+from bs4 import BeautifulSoup
+import requests
+import datetime
+url = "https://rate.bot.com.tw/xrt?Lang=zh-TW"
+response = requests.get(url)
+content = BeautifulSoup(response.text, "html.parser")
+
+trs = content.find("table").find("tbody").find_all("tr")
+i=[]
+for tr in trs:
+    a = tr.find("td").find_all("div")[2].text.strip()
+    b = tr.find_all("td")[1].text
+    c = tr.find_all("td")[2].text
+    d = tr.find_all("td")[3].text.strip()
+    e = tr.find_all("td")[4].text.strip()
+    f = datetime.date.today()
+    i.append((a, b, c, d, e, f))
+    
+df = pd.DataFrame(i, columns = ["幣別","現金匯率本行買入","現金匯率本行賣出","即期匯率本行買入","即期匯率本行賣出", "牌價時間"])  
+import sqlite3
+conn = sqlite3.connect("curr_data.db")
+df.to_sql("currency", conn, if_exists = "replace", index = False)
+
+df = pd.read_sql_query("SELECT * FROM currency", conn)
+conn.close()
+df
+
+# 方法 2 
+import pandas as pd
+from bs4 import BeautifulSoup
+import requests
+url = "https://rate.bot.com.tw/xrt?Lang=zh-TW"
+response = requests.get(url)
+content = BeautifulSoup(response.text, "html.parser")
+
+a = []
+h = content.find_all("div", class_="visible-phone print_hide")
+for i in h:
+    a.append(i.text.strip())
+
+b = []
+w = content.find_all("td", class_="rate-content-cash text-right print_hide")
+for i in w[::2]:
+    b.append(i.text)
+
+c = []
+for i in w[1::2]:
+    c.append(i.text)
+     
+d = []
+f = content.find_all("td", {"data-table" : "本行即期買入"})
+for i in f[::2]:
+    d.append(i.text.strip())
+
+e = []     
+g = content.find_all("td", {"data-table" : "本行即期賣出"})
+for i in g[::2]:
+    e.append(i.text.strip())
+
+import datetime
+i = {"幣別":a,"現金匯率本行買入":b,"現金匯率本行賣出":c,"即期匯率本行買入":d,"即期匯率本行賣出":e,"牌價時間":datetime.date.today()}
+
+df = pd.DataFrame(i) 
+import sqlite3
+conn = sqlite3.connect("curr_data.db")
+df.to_sql("currency", conn, if_exists = "replace", index = False)
+
+df = pd.read_sql_query("SELECT * FROM currency", conn)
+conn.close()
+df
